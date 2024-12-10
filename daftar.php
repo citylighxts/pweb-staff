@@ -5,6 +5,31 @@ $query = "SELECT siswa.*, pegawai.nama as nama_pegawai, pegawai.jabatan
           FROM siswa 
           JOIN pegawai ON siswa.id_pegawai = pegawai.id_pegawai";
 $result = mysqli_query($koneksi, $query);
+
+if (isset($_GET['id'])) {
+    $id_to_delete = mysqli_real_escape_string($koneksi, $_GET['id']);
+    
+    // Create delete query
+    $delete_query = "DELETE FROM siswa WHERE id_siswa = '$id_to_delete'";
+    
+    // Execute delete query
+    if (mysqli_query($koneksi, $delete_query)) {
+        // Redirect back to the list page with a success message
+        header("Location: daftar.php?delete_success=true");
+        exit();
+    } else {
+        // Redirect back with an error message
+        header("Location: daftar.php?delete_error=true");
+        exit();
+    }
+}
+
+if (isset($_GET['delete_success'])) {
+    echo '<div class="alert alert-success">Siswa berhasil dihapus!</div>';
+}
+if (isset($_GET['delete_error'])) {
+    echo '<div class="alert alert-danger">Gagal menghapus siswa.</div>';
+}
 ?>
 
 <!DOCTYPE html>
@@ -78,7 +103,7 @@ $result = mysqli_query($koneksi, $query);
                                         <a href="edit.php?id=<?= $siswa['id_siswa'] ?>" class="btn btn-warning btn-sm">
                                             <i class="bi bi-pencil"></i>
                                         </a>
-                                        <a href="delete2.php?id=<?= $siswa['id_siswa'] ?>" class="btn btn-danger btn-sm" onclick="return confirm('Yakin hapus?')">
+                                        <a href="daftar.php?id=<?= $siswa['id_siswa'] ?>" class="btn btn-danger btn-sm" onclick="return confirm('Yakin hapus?')">
                                             <i class="bi bi-trash"></i>
                                         </a>
                                     </div>
